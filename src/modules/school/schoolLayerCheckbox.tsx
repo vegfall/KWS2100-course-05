@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { GeoJSON } from "ol/format";
 import { useLayer } from "../map/useLayer";
 import { Fill, Stroke, Style, Circle } from "ol/style";
-import { Feature } from "ol";
+import { Feature, MapBrowserEvent } from "ol";
 import { Point } from "ol/geom";
 import { FeatureLike } from "ol/Feature";
+import { MapContext } from "../map/mapContext";
 
 const schoolLayer = new VectorLayer({
   className: "schools",
@@ -18,6 +19,7 @@ const schoolLayer = new VectorLayer({
 });
 
 interface SchoolProperties {
+  navn: string;
   antall_elever: number;
   eierforhold: "Offentlig" | "Private";
 }
@@ -43,9 +45,33 @@ function schoolStyle(feature: FeatureLike) {
 }
 
 export function SchoolLayerCheckbox() {
+  const { map } = useContext(MapContext);
   const [checked, setChecked] = useState(true);
 
+  const [activeFeature, setActiveFeature] = useState<SchoolFeature>();
+
+  function handlePointMove(e: MapBrowserEvent<MouseEvent>) {
+    const features: FeatureLike[] = [];
+
+    map.forEachFeatureAtPixel(e.pixel, (f) => features.push(f), {
+      hitTolerance: 1,
+      layerFilter: (l) => l === schoolLayer,
+    });
+
+    if (features.length === 1) {
+      setActiveFeature(features[0] as SchoolFeature);
+    }
+  }
+
   useLayer(schoolLayer, checked);
+
+  useEffect(() => {
+    if (checked) {
+      map?.on("pointermove", handlePointMove);
+    }
+
+    return () => map?.un("pointermove", handlePointMove);
+  }, [checked]);
 
   return (
     <div>
