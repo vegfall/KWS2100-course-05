@@ -19,6 +19,7 @@ const schoolLayer = new VectorLayer({
 
 interface SchoolProperties {
   antall_elever: number;
+  eierforhold: "Offentlig" | "Private";
 }
 
 type SchoolFeature = {
@@ -27,12 +28,16 @@ type SchoolFeature = {
 
 function schoolStyle(feature: FeatureLike) {
   const schoolFeature = feature as FeatureLike;
+  const school = schoolFeature.getProperties();
 
   return new Style({
     image: new Circle({
-      stroke: new Stroke({ color: "blue", width: 2 }),
+      stroke: new Stroke({
+        color: school.eierforhold === "Offentlig" ? "blue" : "red",
+        width: 2,
+      }),
       fill: new Fill({ color: "white" }),
-      radius: 3 + schoolFeature.getProperties().antall_elever / 150,
+      radius: 3 + school.antall_elever / 150,
     }),
   });
 }
