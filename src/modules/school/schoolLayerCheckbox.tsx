@@ -44,7 +44,7 @@ function schoolStyle(feature: FeatureLike) {
   });
 }
 
-function activeSchoolStyle(feature: FeatureLike) {
+function activeSchoolStyle(feature: FeatureLike, resolution: number) {
   const schoolFeature = feature as FeatureLike;
   const school = schoolFeature.getProperties();
 
@@ -57,13 +57,16 @@ function activeSchoolStyle(feature: FeatureLike) {
       fill: new Fill({ color: "white" }),
       radius: 3 + school.antall_elever / 150,
     }),
-    text: new Text({
-      text: school.navn,
-      offsetY: -13,
-      font: "bold 15px sans-serif",
-      fill: new Fill({ color: "black" }),
-      stroke: new Stroke({ color: "white", width: 5 }),
-    }),
+    text:
+      resolution < 75
+        ? new Text({
+            text: school.navn,
+            offsetY: -13,
+            font: "bold 15px sans-serif",
+            fill: new Fill({ color: "black" }),
+            stroke: new Stroke({ color: "white", width: 5 }),
+          })
+        : undefined,
   });
 }
 
@@ -74,6 +77,12 @@ export function SchoolLayerCheckbox() {
   const [activeFeature, setActiveFeature] = useState<SchoolFeature>();
 
   function handlePointMove(e: MapBrowserEvent<MouseEvent>) {
+    const resolution = map.getView().getResolution();
+
+    if (!resolution || resolution > 100) {
+      return;
+    }
+
     const features: FeatureLike[] = [];
 
     map.forEachFeatureAtPixel(e.pixel, (f) => features.push(f), {
