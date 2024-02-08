@@ -3,7 +3,7 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { GeoJSON } from "ol/format";
 import { useLayer } from "../map/useLayer";
-import { Fill, Stroke, Style, Circle } from "ol/style";
+import { Fill, Stroke, Style, Circle, Text } from "ol/style";
 import { Feature, MapBrowserEvent } from "ol";
 import { Point } from "ol/geom";
 import { FeatureLike } from "ol/Feature";
@@ -56,6 +56,13 @@ function activeSchoolStyle(feature: FeatureLike) {
       }),
       fill: new Fill({ color: "white" }),
       radius: 3 + school.antall_elever / 150,
+    }),
+    text: new Text({
+      text: school.navn,
+      offsetY: -13,
+      font: "bold 15px sans-serif",
+      fill: new Fill({ color: "black" }),
+      stroke: new Stroke({ color: "white", width: 5 }),
     }),
   });
 }
