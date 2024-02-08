@@ -36,7 +36,23 @@ function schoolStyle(feature: FeatureLike) {
     image: new Circle({
       stroke: new Stroke({
         color: school.eierforhold === "Offentlig" ? "blue" : "red",
-        width: 2,
+        width: 1,
+      }),
+      fill: new Fill({ color: "white" }),
+      radius: 3 + school.antall_elever / 150,
+    }),
+  });
+}
+
+function activeSchoolStyle(feature: FeatureLike) {
+  const schoolFeature = feature as FeatureLike;
+  const school = schoolFeature.getProperties();
+
+  return new Style({
+    image: new Circle({
+      stroke: new Stroke({
+        color: school.eierforhold === "Offentlig" ? "blue" : "red",
+        width: 4,
       }),
       fill: new Fill({ color: "white" }),
       radius: 3 + school.antall_elever / 150,
@@ -60,8 +76,16 @@ export function SchoolLayerCheckbox() {
 
     if (features.length === 1) {
       setActiveFeature(features[0] as SchoolFeature);
+    } else {
+      setActiveFeature(undefined);
     }
   }
+
+  useEffect(() => {
+    activeFeature?.setStyle(activeSchoolStyle);
+
+    return () => activeFeature?.setStyle(schoolStyle);
+  }, [activeFeature]);
 
   useLayer(schoolLayer, checked);
 
