@@ -9,6 +9,8 @@ import { Layer } from "ol/layer";
 import { KommuneAside } from "../kommune/kommuneAside";
 import { FylkeLayerCheckbox } from "../fylke/fylkeLayerCheckbox";
 import { FylkeAside } from "../fylke/fylkeAside";
+import { SchoolLayerCheckbox } from "../school/schoolLayerCheckbox";
+import { SchoolAside } from "../school/schoolAside";
 
 export function Application() {
   const mapRef = useRef() as MutableRefObject<HTMLDivElement>;
@@ -48,11 +50,13 @@ export function Application() {
         </a>
         <KommuneLayerCheckbox />
         <FylkeLayerCheckbox />
+        <SchoolLayerCheckbox />
       </nav>
       <main>
         <div ref={mapRef}></div>
         <KommuneAside />
         <FylkeAside />
+        <SchoolAside />
       </main>
     </MapContext.Provider>
   );
