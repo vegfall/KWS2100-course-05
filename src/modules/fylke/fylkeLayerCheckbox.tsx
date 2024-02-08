@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { MapContext } from "../map/mapContext";
+import React, { useState } from "react";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { GeoJSON } from "ol/format";
